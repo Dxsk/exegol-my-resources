@@ -3,7 +3,9 @@ import os
 import sys
 import argparse
 import logging
+from typing import List, Dict, Optional, Any, Tuple
 import colorama
+from pathlib import Path
 from smb.SMBConnection import SMBConnection
 from smb.smb_structs import OperationFailure
 
@@ -20,7 +22,7 @@ class ColoredFormatter(logging.Formatter):
         'CRITICAL': colorama.Fore.RED + colorama.Style.BRIGHT
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         log_message = super().format(record)
         return self.COLORS.get(record.levelname, colorama.Fore.WHITE) + log_message + colorama.Style.RESET_ALL
 
@@ -38,7 +40,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("SMBScript")
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Script to connect to SMB share, list directory structure and download all files")
     parser.add_argument("-u", "--user", required=True, help="SMB username")
     parser.add_argument("-p", "--password", required=True, help="SMB password")
@@ -50,14 +52,14 @@ def parse_arguments():
     parser.epilog = "Example usage: python smb_downloads.py -u \"$USER\" -p \"$PASSWORD\" -d \"$DOMAIN\" -s \"$TARGET\""
     return parser.parse_args()
 
-def connect_to_smb(user, password, domain, server):
+def connect_to_smb(user: str, password: str, domain: str, server: str) -> Optional[SMBConnection]:
     try:
         logger.info(f"Attempting to connect to {server} with user {domain}\\{user}")
         
         if user.lower() == "guest":
             password = ""
         
-        configs = [
+        configs: List[Dict[str, Any]] = [
             {"domain": domain, "use_ntlm_v2": True, "is_direct_tcp": True},
             {"domain": "", "use_ntlm_v2": True, "is_direct_tcp": True},
             {"domain": domain, "use_ntlm_v2": True, "is_direct_tcp": False},
@@ -71,34 +73,34 @@ def connect_to_smb(user, password, domain, server):
                 smb_version = "SMBv3" if config["is_direct_tcp"] else ("SMBv2" if config["use_ntlm_v2"] else "SMBv1")
                 domain_info = f"with domain '{config['domain']}'" if config['domain'] else "without domain"
                 
-                logger.info(f"Trying to connect using {smb_version} {domain_info}")
+                logger.info(f"Attempting connection using {smb_version} {domain_info}")
                 conn = SMBConnection(user, password, "client", server, **config)
                 
                 if conn.connect(server, 445):
-                    logger.info(f"Connection successful to {server} with user {user} using {smb_version} {domain_info} on port 445")
+                    logger.info(f"[+] Connection successful to {server} with user {user} using {smb_version} {domain_info} on port 445")
                     return conn
                 
                 if not config["is_direct_tcp"]:
                     if conn.connect(server, 139):
-                        logger.info(f"Connection successful to {server} with user {user} using {smb_version} {domain_info} on port 139")
+                        logger.info(f"[+] Connection successful to {server} with user {user} using {smb_version} {domain_info} on port 139")
                         return conn
             
             except Exception as e:
-                logger.debug(f"Connection attempt failed using {smb_version} {domain_info}: {str(e)}")
+                logger.debug(f"[-] Connection attempt failed using {smb_version} {domain_info}: {str(e)}")
                 continue
         
-        logger.error(f"Failed to connect to {server} after trying all SMB versions")
+        logger.error(f"[-] Connection failed to {server} after trying all SMB versions")
         return None
     
     except ConnectionResetError:
-        logger.error(f"Connection reset by server. Check your credentials or server availability.")
+        logger.error(f"[-] Connection reset by server. Check your credentials or server availability.")
         return None
     except Exception as e:
-        logger.error(f"Connection error: {str(e)}")
+        logger.exception(f"[-] Connection error: {str(e)}")
         logger.debug(f"Tip: Verify that credential format matches what's used in nxc/smbclient-ng")
         return None
 
-def list_shares(conn):
+def list_shares(conn: SMBConnection) -> List[str]:
     try:
         logger.info("Listing available shares")
         shares = conn.listShares()
@@ -107,53 +109,53 @@ def list_shares(conn):
             logger.info(f"- {share.name} ({share.comments})")
         return [share.name for share in shares]
     except Exception as e:
-        logger.error(f"Error listing shares: {str(e)}")
+        logger.exception(f"[-] Error listing shares: {str(e)}")
         return []
 
-def list_path(conn, share, path="", indent=0):
+def list_path(conn: SMBConnection, share: str, path: str = "", indent: int = 0) -> None:
     try:
         files = conn.listPath(share, path)
         for file in files:
             if file.filename in ['.', '..']:
                 continue
             
-            full_path = os.path.join(path, file.filename) if path else file.filename
+            full_path = str(Path(path) / file.filename) if path else file.filename
             logger.debug(f"{'    ' * indent}{'[D]' if file.isDirectory else '[F]'} {file.filename}")
             
             if file.isDirectory:
                 list_path(conn, share, full_path, indent + 1)
     except OperationFailure as e:
-        logger.warning(f"Access denied: {path} in {share}")
+        logger.warning(f"[-] Access denied: {path} in {share}")
     except Exception as e:
-        logger.error(f"Error listing {path} in {share}: {str(e)}")
+        logger.exception(f"[-] Error listing {path} in {share}: {str(e)}")
 
-def download_files(conn, share, path="", local_base="", indent=0):
+def download_files(conn: SMBConnection, share: str, path: str = "", local_base: str = "", indent: int = 0) -> None:
     try:
         files = conn.listPath(share, path)
         for file in files:
             if file.filename in ['.', '..']:
                 continue
             
-            full_path = os.path.join(path, file.filename) if path else file.filename
-            local_path = os.path.join(local_base, share, full_path)
+            full_path = str(Path(path) / file.filename) if path else file.filename
+            local_path = Path(local_base) / share / full_path
             
             if file.isDirectory:
-                os.makedirs(local_path, exist_ok=True)
+                local_path.mkdir(parents=True, exist_ok=True)
                 download_files(conn, share, full_path, local_base, indent + 1)
             else:
-                os.makedirs(os.path.dirname(local_path), exist_ok=True)
+                local_path.parent.mkdir(parents=True, exist_ok=True)
                 try:
                     with open(local_path, 'wb') as file_obj:
                         conn.retrieveFile(share, full_path, file_obj)
-                    logger.info(f"Downloaded: {full_path} -> {local_path}")
+                    logger.info(f"[+] Downloaded: {full_path} -> {local_path}")
                 except Exception as e:
-                    logger.error(f"Failed to download {full_path}: {str(e)}")
+                    logger.exception(f"[-] Failed to download {full_path}: {str(e)}")
     except OperationFailure as e:
-        logger.warning(f"Access denied: {path} in {share}")
+        logger.warning(f"[-] Access denied: {path} in {share}")
     except Exception as e:
-        logger.error(f"Error downloading from {path} in {share}: {str(e)}")
+        logger.exception(f"[-] Error downloading from {path} in {share}: {str(e)}")
 
-def explore_share(conn, share, folder=None):
+def explore_share(conn: SMBConnection, share: str, folder: Optional[str] = None) -> bool:
     try:
         logger.info(f"Exploring directory structure of share {share}")
         
@@ -164,10 +166,10 @@ def explore_share(conn, share, folder=None):
             list_path(conn, share)
         return True
     except Exception as e:
-        logger.error(f"Error exploring share {share}: {str(e)}")
+        logger.exception(f"[-] Error exploring share {share}: {str(e)}")
         return False
 
-def download_share(conn, share, folder=None, output_dir=""):
+def download_share(conn: SMBConnection, share: str, folder: Optional[str] = None, output_dir: str = "") -> bool:
     try:
         if folder:
             logger.info(f"Downloading files from folder {folder} in share {share}")
@@ -177,10 +179,10 @@ def download_share(conn, share, folder=None, output_dir=""):
             download_files(conn, share, "", output_dir)
         return True
     except Exception as e:
-        logger.error(f"Error downloading from share {share}: {str(e)}")
+        logger.exception(f"[-] Error downloading from share {share}: {str(e)}")
         return False
 
-def main():
+def main() -> None:
     args = parse_arguments()
     
     if args.verbose:
@@ -190,7 +192,7 @@ def main():
     
     conn = connect_to_smb(args.user, args.password, args.domain, args.server)
     if not conn:
-        logger.error("Unable to connect to SMB server. Stopping script.")
+        logger.error("Unable to connect to SMB server. Exiting script.")
         sys.exit(1)
     
     shares = list_shares(conn)
@@ -198,7 +200,7 @@ def main():
     for share in shares:
         explore_share(conn, share, args.folder)
     
-    os.makedirs(args.output, exist_ok=True)
+    Path(args.output).mkdir(parents=True, exist_ok=True)
     
     for share in shares:
         download_share(conn, share, args.folder, args.output)
