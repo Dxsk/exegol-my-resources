@@ -1,0 +1,9 @@
+# Config file dedicated to the user's personal history shared between all exegol containers
+
+nmap -Pn -sC -sV -v -p- "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
+nmap -Pn -sC -sV -v -p- -O "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
+
+haiti "$HASH"
+hashcat -m 500 -a 0 "$HASH" `fzf-wordlists`
+ssh2john.py private_key private_key_hash && john --format=ssh private_key_hash -w=`fzf-wordlists`
+

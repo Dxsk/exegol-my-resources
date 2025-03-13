@@ -1,0 +1,26 @@
+# The customization of some tools may require the installation of some packages or other dependencies.
+# To simplify this process, the name of the pip packages to be installed can be listed in this file like a regular requirements.txt.
+# All packages listed below will be installed automatically with pip3 when creating a new Exegol container.
+
+# network
+requests
+scapy
+pyshark
+paramiko
+python3-nmap
+websocket-client
+
+# crypto
+pycrypto
+
+# analyse
+pandas
+matplotlib
+numpy
+
+# parser
+beautifulsoup4
+marko
+
+# miscs
+pwntools

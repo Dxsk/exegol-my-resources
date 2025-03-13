@@ -1,0 +1,3 @@
+# Config file dedicated to the user's personal aliases shared between all exegol containers
+
+alias vim='nvim'
