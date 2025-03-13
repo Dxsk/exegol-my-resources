@@ -9,9 +9,11 @@ pyshark
 paramiko
 python3-nmap
 websocket-client
+pysmb
 
 # crypto
 pycrypto
+pycryptodome
 
 # analyse
 pandas
@@ -22,5 +24,14 @@ numpy
 beautifulsoup4
 marko
 
+# Menu
+argparse
+click
+
+# logging
+colorama
+rich
+
 # miscs
 pwntools
+GitPython
