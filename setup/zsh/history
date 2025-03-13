@@ -4,6 +4,10 @@ nmap -Pn -sC -sV -v -p- "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%
 nmap -Pn -sC -sV -v -p- -O "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
 
 haiti "$HASH"
-hashcat -m 500 -a 0 "$HASH" `fzf-wordlists`
+
+hashcat -m 0 -a 0 "$HASH" `fzf-wordlists`  # MD5
+hashcat -m 100 -a 0 "$HASH" `fzf-wordlists`  # SHA1
+hashcat -m 1700 -a 0 "$HASH" `fzf-wordlists`  # SHA2-512
+
 ssh2john.py private_key private_key_hash && john --format=ssh private_key_hash -w=`fzf-wordlists`
 
