@@ -1,3 +1,4 @@
 # Config file dedicated to the user's personal aliases shared between all exegol containers
 
 alias vim='nvim'
+alias edit.export='nvim /opt/tools/Exegol-history/profile.sh && exec zsh' 
