@@ -13,7 +13,7 @@ Link to doc : [Exegol documentation](https://exegol.readthedocs.io/en/latest/exe
 - Python and requirements.txt
     - Added a [requirements.txt](setup/python3/requirements.txt) with several useful modules for scripts during CTF/pentest
     - Added a [smb_download.py](setup/python3/smb_downloads.py) script that allows downloading all files from an SMB server
-    - Added history with variables `$USER`, `$TARGET`, `$PASSWORD` to easily find them in the exegol history
+    - Added history with variables `$USER`, `$TARGET`, `$PASSWORD` and `$DOMAIN` to easily find them in the exegol history
     - Added a function in zsh aliases to quickly launch the script
 
 - Zsh
