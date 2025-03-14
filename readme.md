@@ -3,7 +3,7 @@
 Exegol allows customizing your environment through the `/opt/my-resources` folder.  
 Here are the modifications and additions I've made for my usage.
 
-Link to doc : [Exegol documentation](https://exegol.readthedocs.io/en/latest/exegol-image/my-resources.html/)
+Link to doc : [Exegol documentation](https://exegol.readthedocs.io/en/latest/exegol-image/my-resources.html)
 
 ## Additions
 
