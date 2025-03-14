@@ -2,3 +2,9 @@
 
 alias vim='nvim'
 alias edit.export='nvim /opt/tools/Exegol-history/profile.sh && exec zsh' 
+
+smbdownloads () {
+  python /opt/my-resources/setup/python3/smb_downloads.py $@
+}
+
+alias smb_downloads="smbdownloads"
