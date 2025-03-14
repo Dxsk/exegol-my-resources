@@ -11,3 +11,6 @@ hashcat -m 1700 -a 0 "$HASH" `fzf-wordlists`  # SHA2-512
 
 ssh2john.py private_key private_key_hash && john --format=ssh private_key_hash -w=`fzf-wordlists`
 
+# Custom smb downloader https://github.com/Dxsk/exegol-my-resources/blob/main/setup/python3/smb_downloads.py
+smb_downloads  -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"
+smbdownloads -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"

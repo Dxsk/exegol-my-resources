@@ -1,10 +1,11 @@
 # Config file dedicated to the user's personal aliases shared between all exegol containers
 
+# smb_downloads.py 
+smbdownloads () {python /opt/my-resources/setup/python3/smb_downloads.py $@}
+alias smb_downloads='smbdownloads'
+
+# editor
 alias vim='nvim'
+
+# shortcut to edit and load the profile.sh
 alias edit.export='nvim /opt/tools/Exegol-history/profile.sh && exec zsh' 
-
-smbdownloads () {
-  python /opt/my-resources/setup/python3/smb_downloads.py $@
-}
-
-alias smb_downloads="smbdownloads"
