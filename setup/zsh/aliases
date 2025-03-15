@@ -20,3 +20,19 @@ wget.focus () { wget --no-parent --convert-links --no-host-directories --execute
 wget.full () { wget --recursive --no-parent --convert-links --page-requisites --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 http://$NDD }
 wget.light () { wget --recursive --no-parent --convert-links --page-requisites --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 --reject="*.js,*.jpg,*.png,*.ico" http://$NDD }
 wget.random.light () { wget --recursive --no-parent --convert-links --page-requisites --random-wait --wait=3 --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 --reject="*.js,*.jpg,*.png,*.ico" http://$NDD }
+
+# base64
+b.decode () { echo $1 | base64 -d }
+b.encode () { echo $1 | base64 } 
+
+# shortcut Documentations
+doc.gtfobin () { echo 'https://gtfobins.github.io/' }
+doc.hacktricks () { echo 'https://book.hacktricks.wiki/en/index.html' }  
+doc.thehackerrecipes () { echo 'https://www.thehacker.recipes/' }
+doc.exegol () { echo 'https://exegol.readthedocs.io/' } 
+doc.lolbas () { echo 'https://lolbas-project.github.io/' }
+
+github.poda () { echo 'https://github.com/p0dalirius' }
+
+tools.cyberchef () { echo 'https://gchq.github.io/CyberChef/' }
+
