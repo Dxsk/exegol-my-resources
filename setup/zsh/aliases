@@ -4,8 +4,19 @@
 smbdownloads () {python /opt/my-resources/setup/python3/smb_downloads.py $@}
 alias smb_downloads='smbdownloads'
 
+# add hosts
+add.host () { local resultat="$1"; shift; for param in "$@"; do resultat="${resultat}	$param"; done; echo "$resultat" >> /etc/hosts; }
+show.host () { bat /etc/hosts }
+edit.host () { nvim /etc/hosts }
+
 # editor
 alias vim='nvim'
 
 # shortcut to edit and load the profile.sh
 alias edit.export='nvim /opt/tools/Exegol-history/profile.sh && exec zsh' 
+
+# wget 
+wget.focus () { wget --no-parent --convert-links --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 http://$NDD/$1 }
+wget.full () { wget --recursive --no-parent --convert-links --page-requisites --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 http://$NDD }
+wget.light () { wget --recursive --no-parent --convert-links --page-requisites --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 --reject="*.js,*.jpg,*.png,*.ico" http://$NDD }
+wget.random.light () { wget --recursive --no-parent --convert-links --page-requisites --random-wait --wait=3 --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 --reject="*.js,*.jpg,*.png,*.ico" http://$NDD }
