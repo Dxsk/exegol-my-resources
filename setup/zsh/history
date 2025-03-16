@@ -1,16 +1,50 @@
 # Config file dedicated to the user's personal history shared between all exegol containers
 
+# Nmap
 nmap -Pn -sC -sV -v -p- "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
 nmap -Pn -sC -sV -v -p- -O "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
 
+# Identify hash
 haiti "$HASH"
 
+# Hashcat
 hashcat -m 0 -a 0 "$HASH" `fzf-wordlists`  # MD5
 hashcat -m 100 -a 0 "$HASH" `fzf-wordlists`  # SHA1
 hashcat -m 1700 -a 0 "$HASH" `fzf-wordlists`  # SHA2-512
 
+# John the Ripper
 ssh2john.py private_key private_key_hash && john --format=ssh private_key_hash -w=`fzf-wordlists`
 
 # Custom smb downloader https://github.com/Dxsk/exegol-my-resources/blob/main/setup/python3/smb_downloads.py
 smb_downloads  -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"
 smbdownloads -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"
+
+# host
+add.host $TARGET $NDD
+show.host
+edit.host
+
+# profile.sh
+edit.export
+show.export
+
+# export
+add.
+
+# base64
+b.decode "
+b.encode "
+
+# docs
+doc.gtfobin
+doc.hacktricks
+doc.thehackerrecipes
+doc.exegol
+doc.exegol.tricks
+doc.lolbas
+
+# github
+github.poda
+
+# tools
+tools.cyberchef
