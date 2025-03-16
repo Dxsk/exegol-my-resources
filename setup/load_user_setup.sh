@@ -8,3 +8,7 @@ set -e
 # Exegol also features a set of supported customization a user can make.
 # The /opt/supported_setups.md file lists the supported configurations that can be made easily.
 
+source /opt/my-resources/setup/scripts/caido.sh
+install_caido
+
+apt install kate -y 
