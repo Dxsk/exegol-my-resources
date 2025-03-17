@@ -8,13 +8,13 @@ my_resources_path='/opt/my-resources'
 ws.gen () {
     if [ -z "$ATTACKER_PASSPHRASE" ]; then
         echo "ATTACKER_PASSPHRASE is not set"
-        read -s -p "Enter the passphrase: " ATTACKER_PASSPHRASE
-        echo "export ATTACKER_PASSPHRASE=$ATTACKER_PASSPHRASE" >> $ex_profile_path
+        read -s "?Enter the passphrase: " ATTACKER_PASSPHRASE
+        echo "export ATTACKER_PASSPHRASE='$ATTACKER_PASSPHRASE'" >> $ex_profile_path
         exec zsh
     fi
 
     mkdir -p $ws_path/{implants,scripts,tools,miscs,sources,differences,reports}
-    touch $ws_path/{doc.md}
+    touch $ws_path/doc.md
     ssh-keygen -t rsa -b 4096 -f $ws_path/implants/implant.key -N $ATTACKER_PASSPHRASE -q
 }
 
@@ -37,9 +37,7 @@ add.export () {
     echo "Usage: add.export VARIABLE_NAME VALUE"
     return 1
   fi
-  shift
-  local value="$2"
-  result="${result}${value}'"
+  result="${result}$2'"
   echo "$result" >> $ex_profile_path
 }
 show.export () { bat $ex_profile_path }
