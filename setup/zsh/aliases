@@ -1,7 +1,25 @@
 # Config file dedicated to the user's personal aliases shared between all exegol containers
 
+ws_path='/workspace'
+ex_profile_path='/opt/tools/Exegol-history/profile.sh'
+my_resources_path='/opt/my-resources'
+
+# custom /workspace/ directory
+ws.gen () {
+    if [ -z "$ATTACKER_PASSPHRASE" ]; then
+        echo "ATTACKER_PASSPHRASE is not set"
+        read -s -p "Enter the passphrase: " ATTACKER_PASSPHRASE
+        echo "export ATTACKER_PASSPHRASE=$ATTACKER_PASSPHRASE" >> $ex_profile_path
+        exec zsh
+    fi
+
+    mkdir -p $ws_path/{implants,scripts,tools,miscs,sources,differences,reports}
+    touch $ws_path/{doc.md}
+    ssh-keygen -t rsa -b 4096 -f $ws_path/implants/implant.key -N $ATTACKER_PASSPHRASE -q
+}
+
 # smb_downloads.py 
-smbdownloads () { python /opt/my-resources/setup/python3/smb_downloads.py $@ }
+smbdownloads () { python $my_resources_path/setup/python3/smb_downloads.py $@ }
 alias smb_downloads='smbdownloads'
 
 # add hosts
@@ -13,14 +31,19 @@ edit.host () { nvim /etc/hosts }
 alias vim='nvim'
 
 # shortcut to edit and load the profile.sh
-# add.export () { 
-#   local result="export $1='";
-#   shift;
-#   for params in "$@"; do result="${result} $param'"; done;
-#   echo "$result" >> /opt/tools/Exegol-history/profiles.sh $$ exec zsh
-# }
-show.export () { bat /opt/tools/Exegol-history/profile.sh }
-edit.export () { nvim /opt/tools/Exegol-history/profile.sh && exec zsh } 
+add.export () { 
+  local result="export $1='";
+  if [ $# -lt 2 ]; then
+    echo "Usage: add.export VARIABLE_NAME VALUE"
+    return 1
+  fi
+  shift
+  local value="$2"
+  result="${result}${value}'"
+  echo "$result" >> $ex_profile_path
+}
+show.export () { bat $ex_profile_path }
+edit.export () { nvim $ex_profile_path && exec zsh } 
 
 # wget 
 wget.focus () { wget --no-parent --convert-links --no-host-directories --execute robots=off --user-agent=Mozilla/5.0 http://$NDD/$1 }

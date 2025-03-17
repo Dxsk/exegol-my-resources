@@ -1,8 +1,8 @@
 # Config file dedicated to the user's personal history shared between all exegol containers
 
 # Nmap
-nmap -Pn -sC -sV -v -p- "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
-nmap -Pn -sC -sV -v -p- -O "$TARGET" -oN "nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
+nmap -Pn -sC -sV -v -p- "$TARGET" -oN "/workspace/reports/nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
+nmap -Pn -sC -sV -v -p- -O "$TARGET" -oN "/workspace/reports/nmap_`echo $TARGET`_scv_`date +%d.%m.%y_%H:%M`.out" -T5
 
 # Identify hash
 haiti "$HASH"
