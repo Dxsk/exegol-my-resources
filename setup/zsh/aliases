@@ -9,7 +9,7 @@ ws.gen () {
 
     # get the tun0 IP if the interface exists (shortcut for htb)
     ATTACKER_IP=$(ip -4 addr show tun0 | grep -oP '(?<=inet )[^/]+')
-    echo "export ATTACKER_IP=$ATTACKER_IP" >> $ex_profile_path
+    echo "export ATTACKER_IP='$ATTACKER_IP'" >> $ex_profile_path
 
     if [ -z "$ATTACKER_PASSPHRASE" ]; then
         echo "ATTACKER_PASSPHRASE is not set"
