@@ -44,6 +44,7 @@ add.export () {
   fi
   result="${result}$2'"
   echo "$result" >> $ex_profile_path
+  exec zsh
 }
 show.export () { bat $ex_profile_path }
 edit.export () { nvim $ex_profile_path && exec zsh } 
