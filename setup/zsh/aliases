@@ -70,7 +70,7 @@ cs.enum.linux () {
   echo 'find / -perm -g=s -type f 2>/dev/null;'
 
   # get all users and groups
-  echo 'echo "users\n"; cat /etc/passwd | cut -d: -f1; echo "groups\n"; cat /etc/group | cut -d: -f1;'
+  echo 'echo "==== users ===="; cat /etc/passwd | cut -d: -f1; echo "==== groups ===="; cat /etc/group | cut -d: -f1;'
 }
 
 cs.rs.linux () {
