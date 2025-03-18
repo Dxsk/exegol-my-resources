@@ -7,6 +7,9 @@ nmap -Pn -sC -sV -v -p- -O "$TARGET" -oN "/workspace/reports/nmap_`echo $TARGET`
 # Identify hash
 haiti "$HASH"
 
+# crawler
+echo "http://$NDD" |  hakrawler | sort -u > /workspace/reports/crawler.out
+
 # Hashcat
 hashcat -m 0 -a 0 "$HASH" `fzf-wordlists`  # MD5
 hashcat -m 100 -a 0 "$HASH" `fzf-wordlists`  # SHA1
@@ -24,12 +27,14 @@ add.host $TARGET $NDD
 show.host
 edit.host
 
+# network checking
+ping -c 1 $TARGET
+curl -s $NDD
+
 # profile.sh
 edit.export
 show.export
-
-# export
-add.
+add.export "" ""
 
 # base64
 b.decode "
