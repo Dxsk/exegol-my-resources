@@ -102,6 +102,8 @@ doc.lolbas () { echo 'https://lolbas-project.github.io/' }
 
 # github
 github.poda () { echo 'https://github.com/p0dalirius' }
+github.payloadsallthethings () { echo 'https://github.com/swisskyrepo/PayloadsAllTheThings' }
+github.payloadsallthethings.methodology () { echo 'https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Methodology%20and%20Resources' }
 
 # tools
 tools.cyberchef () { echo 'https://gchq.github.io/CyberChef/' }
