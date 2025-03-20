@@ -12,7 +12,6 @@ websocket-client
 pysmb
 
 # crypto
-pycrypto
 pycryptodome
 
 # analyse
