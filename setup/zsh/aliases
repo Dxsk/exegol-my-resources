@@ -15,11 +15,11 @@ ws.gen () {
         echo "ATTACKER_PASSPHRASE is not set"
         read -s "?Enter the passphrase: " ATTACKER_PASSPHRASE
         echo "export ATTACKER_PASSPHRASE='$ATTACKER_PASSPHRASE'" >> $ex_profile_path
+        export ATTACKER_PASSPHRASE=$ATTACKER_PASSPHRASE
     fi
 
-    mkdir -p $ws_path/{implants,scripts,tools,miscs,sources,differences,reports,dumps}
+    mkdir -p $ws_path/{implants,scripts,tools,miscs,sources,differences,reports,dumps,payloads}
     touch $ws_path/doc.md
-    exec zsh
     ssh-keygen -t rsa -b 4096 -f $ws_path/implants/implant.key -N $ATTACKER_PASSPHRASE -q
 }
 

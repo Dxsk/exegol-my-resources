@@ -8,7 +8,9 @@ set -e
 # Exegol also features a set of supported customization a user can make.
 # The /opt/supported_setups.md file lists the supported configurations that can be made easily.
 
+apt update 
+
 source /opt/my-resources/setup/scripts/caido.sh
 install_caido
 
-apt install kate -y 
+apt install featherpad -y 

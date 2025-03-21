@@ -22,6 +22,11 @@ ssh2john.py private_key private_key_hash && john --format=ssh private_key_hash -
 smb_downloads  -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"
 smbdownloads -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"
 
+# ssh tricks
+sshpass -p "$PASSWORD" ssh "$USER@$TARGET"
+sshpass -p "$PASSWORD" scp $USER@$TARGET 
+pwncat-cs ssh://"$USER:$PASSWORD@$TARGET"
+
 # host
 add.host $TARGET $NDD
 show.host
