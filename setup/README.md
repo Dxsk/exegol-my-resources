@@ -8,7 +8,7 @@ Configuration files stored in the `/opt/my-resources/setup/` directory will be d
 
 By default, the number of officially supported configuration files is limited, and it depends on the version of the image.
 In order to see what configuration files are supported, the `/opt/supported_setups.md` documentation file can be read from any container.
-The online documentation can be consulted as well to understand how this feature works and what is supported in the latest Exegol images versions: https://exegol.readthedocs.io/
+The online documentation can be consulted as well to understand how this feature works and what is supported in the latest Exegol images versions: <https://exegol.readthedocs.io/>
 
 If a user wants to deploy tools and configurations that are not supported, or more advanced, the `load_user_setup.sh` script can be used, more information below.
 
