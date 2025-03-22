@@ -4,7 +4,6 @@ ws_path='/workspace'
 ex_profile_path='/opt/tools/Exegol-history/profile.sh'
 my_resources_path='/opt/my-resources'
 
-
 # custom /workspace/ directory
 ws.gen () {
 
