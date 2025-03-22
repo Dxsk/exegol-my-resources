@@ -26,6 +26,7 @@ smbdownloads -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -s "$TARGET"
 sshpass -p "$PASSWORD" ssh "$USER@$TARGET"
 sshpass -p "$PASSWORD" scp $USER@$TARGET 
 pwncat-cs ssh://"$USER:$PASSWORD@$TARGET"
+pwncat-cs -lp 9999
 
 # host
 add.host $TARGET $NDD
